@@ -154,7 +154,7 @@ const AnimatedLines = ({ lines, active }: { lines: string[]; active: boolean }) 
             <span
               style={{
                 fontFamily: "'Bitter Rose', 'Dancing Script', cursive",
-                fontSize: "clamp(0.95rem, 3vw, 1.1rem)",
+                fontSize: "1.25rem",
                 lineHeight: "1.9",
                 color: "hsl(320 25% 88% / 0.92)",
                 letterSpacing: "0.01em",
@@ -233,7 +233,7 @@ const SealedNote = ({ note, active }: { note: typeof notesData[0]; active: boole
             {line && (
               <p style={{
                 fontFamily: "'Bitter Rose', 'Dancing Script', cursive",
-                fontSize: "0.93rem",
+                fontSize: "1.25rem",
                 lineHeight: "1.85",
                 color: "hsl(20 35% 22%)",
                 margin: 0,
