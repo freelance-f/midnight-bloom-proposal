@@ -26,7 +26,10 @@ const CenterImage = ({ onAnimationComplete, onRevealStart }: CenterImageProps) =
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6" style={{ zIndex: 2 }}>
+    <div
+      className="relative flex flex-col items-center justify-center gap-6"
+      style={{ zIndex: 20 }}
+    >
       <div
         role="button"
         tabIndex={0}
@@ -69,6 +72,7 @@ const CenterImage = ({ onAnimationComplete, onRevealStart }: CenterImageProps) =
             style={{
               position: "absolute",
               inset: 0,
+              zIndex: 22,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -76,7 +80,6 @@ const CenterImage = ({ onAnimationComplete, onRevealStart }: CenterImageProps) =
               pointerEvents: "none",
               textAlign: "center",
               padding: "0 1rem",
-              background: "linear-gradient(180deg, hsl(0 0% 0% / 0.2), hsl(0 0% 0% / 0.45))",
             }}
           >
             <p

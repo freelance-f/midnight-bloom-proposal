@@ -6,6 +6,7 @@ import ProposalInteraction from "@/components/ProposalInteraction";
 
 const Index = () => {
   const [showNotes, setShowNotes] = useState(false);
+  const [isPageBlurred, setIsPageBlurred] = useState(true);
   const notesRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const handleAnimationComplete = useCallback(() => setShowNotes(true), []);
@@ -19,6 +20,7 @@ const Index = () => {
   }, []);
 
   const handleRevealStart = useCallback(() => {
+    setIsPageBlurred(false);
     playBackgroundMusic();
   }, [playBackgroundMusic]);
 
@@ -37,6 +39,17 @@ const Index = () => {
     >
       <audio ref={audioRef} src="/dear-kavya-bgm.mp3" loop preload="auto" playsInline />
 
+      <div
+        className="fixed inset-0 pointer-events-none transition-opacity duration-1000"
+        style={{
+          zIndex: 6,
+          opacity: isPageBlurred ? 1 : 0,
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          background: "hsl(270 24% 8% / 0.5)",
+        }}
+      />
+
       {/* Ambient glow */}
       <div
         className="fixed inset-0 pointer-events-none"
@@ -46,7 +59,7 @@ const Index = () => {
       <FloatingParticles />
 
       {/* Hero Section - Full screen, only PNG */}
-      <section className="relative h-screen flex items-center justify-center" style={{ zIndex: 2 }}>
+      <section className="relative h-screen flex items-center justify-center" style={{ zIndex: 10 }}>
         <CenterImage onAnimationComplete={handleAnimationComplete} onRevealStart={handleRevealStart} />
       </section>
 
