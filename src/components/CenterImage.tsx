@@ -3,18 +3,22 @@ import proposalImage from "@/assets/proposal-image.png";
 
 interface CenterImageProps {
   onAnimationComplete: () => void;
+  onRevealStart?: () => void;
 }
 
-const CenterImage = ({ onAnimationComplete }: CenterImageProps) => {
+const CenterImage = ({ onAnimationComplete, onRevealStart }: CenterImageProps) => {
   const [visible, setVisible] = useState(false);
   const [showQuote, setShowQuote] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setVisible(true), 500);
+    const t1 = setTimeout(() => {
+      setVisible(true);
+      onRevealStart?.();
+    }, 500);
     const t2 = setTimeout(() => setShowQuote(true), 5000);
     const t3 = setTimeout(() => onAnimationComplete(), 10000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [onAnimationComplete]);
+  }, [onAnimationComplete, onRevealStart]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-6" style={{ zIndex: 2 }}>
