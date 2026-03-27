@@ -8,24 +8,18 @@ const Index = () => {
   const [showNotes, setShowNotes] = useState(false);
   const notesRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const hasStartedAudioRef = useRef(false);
-  const hasUnmutedAudioRef = useRef(false);
   const handleAnimationComplete = useCallback(() => setShowNotes(true), []);
-  const playBackgroundMusic = useCallback((fromStart = false) => {
+  const playBackgroundMusic = useCallback(() => {
     if (!audioRef.current) return;
-    if (fromStart) {
-      audioRef.current.currentTime = 0;
-    }
-    audioRef.current.muted = true;
-    void audioRef.current.play().then(() => {
-      hasStartedAudioRef.current = true;
-    }).catch(() => {
+    audioRef.current.currentTime = 0;
+    audioRef.current.muted = false;
+    void audioRef.current.play().catch(() => {
       // Browser may block autoplay until first user interaction.
     });
   }, []);
 
   const handleRevealStart = useCallback(() => {
-    playBackgroundMusic(true);
+    playBackgroundMusic();
   }, [playBackgroundMusic]);
 
   useEffect(() => {
@@ -35,29 +29,6 @@ const Index = () => {
       }, 500);
     }
   }, [showNotes]);
-
-  useEffect(() => {
-    const unlockAudio = () => {
-      if (!audioRef.current) return;
-      if (!hasStartedAudioRef.current) {
-        playBackgroundMusic(false);
-      }
-      if (!hasUnmutedAudioRef.current) {
-        audioRef.current.muted = false;
-        hasUnmutedAudioRef.current = true;
-      }
-    };
-
-    window.addEventListener("pointerdown", unlockAudio, { once: true });
-    window.addEventListener("keydown", unlockAudio, { once: true });
-    window.addEventListener("touchstart", unlockAudio, { once: true });
-
-    return () => {
-      window.removeEventListener("pointerdown", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
-    };
-  }, [playBackgroundMusic]);
 
   return (
     <div

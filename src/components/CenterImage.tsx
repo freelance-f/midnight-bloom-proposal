@@ -9,26 +9,43 @@ interface CenterImageProps {
 const CenterImage = ({ onAnimationComplete, onRevealStart }: CenterImageProps) => {
   const [visible, setVisible] = useState(false);
   const [showQuote, setShowQuote] = useState(false);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => {
-      setVisible(true);
-      onRevealStart?.();
-    }, 500);
-    const t2 = setTimeout(() => setShowQuote(true), 5000);
-    const t3 = setTimeout(() => onAnimationComplete(), 10000);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [onAnimationComplete, onRevealStart]);
+    if (!revealed) return;
+    setVisible(true);
+    const t2 = setTimeout(() => setShowQuote(true), 4500);
+    const t3 = setTimeout(() => onAnimationComplete(), 9500);
+    return () => { clearTimeout(t2); clearTimeout(t3); };
+  }, [revealed, onAnimationComplete]);
+
+  const handleReveal = () => {
+    if (revealed) return;
+    setRevealed(true);
+    onRevealStart?.();
+  };
 
   return (
     <div className="flex flex-col items-center justify-center gap-6" style={{ zIndex: 2 }}>
       <div
+        role="button"
+        tabIndex={0}
+        onClick={handleReveal}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleReveal();
+          }
+        }}
+        aria-label="Tap to reveal"
         style={{
-          opacity: visible ? 1 : 0,
-          filter: visible
-            ? "blur(0px) drop-shadow(0 0 40px hsl(280 60% 55% / 0.4))"
-            : "blur(6px)",
-          transition: "opacity 7s cubic-bezier(0.16, 1, 0.3, 1), filter 7s cubic-bezier(0.16, 1, 0.3, 1)",
+          position: "relative",
+          cursor: revealed ? "default" : "pointer",
+          opacity: revealed ? (visible ? 1 : 0) : 1,
+          filter: revealed
+            ? (visible ? "blur(0px) drop-shadow(0 0 40px hsl(280 60% 55% / 0.4))" : "blur(8px)")
+            : "blur(12px) brightness(0.65)",
+          transition: "opacity 6.5s cubic-bezier(0.16, 1, 0.3, 1), filter 6.5s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
         <img
@@ -40,6 +57,35 @@ const CenterImage = ({ onAnimationComplete, onRevealStart }: CenterImageProps) =
             objectFit: "contain",
           }}
         />
+
+        {!revealed && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+              textAlign: "center",
+              padding: "0 1rem",
+              background: "linear-gradient(180deg, hsl(0 0% 0% / 0.2), hsl(0 0% 0% / 0.45))",
+            }}
+          >
+            <p
+              className="font-proposal-body"
+              style={{
+                color: "hsl(285 38% 90% / 0.92)",
+                fontSize: "clamp(0.95rem, 2.6vw, 1.2rem)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textShadow: "0 0 20px hsl(280 80% 60% / 0.45)",
+              }}
+            >
+              Tap to reveal
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Romantic quote */}
